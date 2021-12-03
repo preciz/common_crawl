@@ -8,6 +8,17 @@ defmodule CommonCrawl do
 
   @doc """
   Cached collinfo from disk.
+
+  ## Examples
+
+      CommonCrawl.collinfo()
+      [%{
+        "cdx-api" => "https://index.commoncrawl.org/CC-MAIN-2021-43-index",
+        "id" => "CC-MAIN-2021-43",
+        "name" => "October 2021 Index",
+        "timegate" => "https://index.commoncrawl.org/CC-MAIN-2021-43/"
+      }, ...]
+
   """
   @spec collinfo :: [map]
   def collinfo, do: @collinfo
