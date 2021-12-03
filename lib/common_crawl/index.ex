@@ -48,7 +48,7 @@ defmodule CommonCrawl.Index do
   end
 
   @doc """
-  Fetches an index file and gunzip it.
+  Fetches a gzipped index file.
   """
   @spec get(String.t(), String.t()) :: {:ok, binary} | {:error, any}
   def get("CC-MAIN-" <> _rest = crawl_id, filename, headers \\ [], options \\ []) do
@@ -56,7 +56,7 @@ defmodule CommonCrawl.Index do
 
     case HTTPoison.get(url, headers, options) do
       {:ok, %HTTPoison.Response{body: body}} ->
-        {:ok, body |> :zlib.gunzip()}
+        {:ok, body}
 
       {:error, error} ->
         {:error, error}
@@ -64,20 +64,16 @@ defmodule CommonCrawl.Index do
   end
 
   @doc """
-  Parses index file. Returns a stream.
+  Parses a line of an index file.
   """
-  @spec parse(binary) :: list
-  def parse(index) do
-    index
-    |> String.split("\n", trim: true)
-    |> Stream.map(fn line ->
-      [search_key, timestamp, json] = String.split(line, " ", parts: 3)
+  @spec parser(Enum.t()) :: list
+  def parser(line) do
+    [search_key, timestamp, json] = String.split(line, " ", parts: 3)
 
-      timestamp = String.to_integer(timestamp)
-      {:ok, map} = Jason.decode(json)
+    timestamp = String.to_integer(timestamp)
+    {:ok, map} = Jason.decode(json)
 
-      {search_key, timestamp, map}
-    end)
+    {search_key, timestamp, map}
   end
 
   @doc """
