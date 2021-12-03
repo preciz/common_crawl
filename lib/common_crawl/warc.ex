@@ -20,15 +20,23 @@ defmodule CommonCrawl.WARC do
 
     case HTTPoison.get(url, headers, options) do
       {:ok, %{body: body}} ->
-        [warc, headers, response] =
-          :zlib.gunzip(body)
-          |> String.trim()
-          |> String.split("\r\n\r\n", parts: 3)
+        case parse_response_body(body) do
+          [warc, headers, response] ->
+            {:ok, %{warc: warc, headers: headers, response: response}}
 
-        {:ok, %{warc: warc, headers: headers, response: response}}
+          other ->
+            {:error, {:no_headers_or_response, other}}
+        end
 
       {:error, reason} ->
         {:error, reason}
     end
+  end
+
+  defp parse_response_body(gzipped_bin) do
+    gzipped_bin
+    |> :zlib.gunzip()
+    |> String.trim()
+    |> String.split("\r\n\r\n", parts: 3)
   end
 end
