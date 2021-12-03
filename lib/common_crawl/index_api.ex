@@ -22,7 +22,8 @@ defmodule CommonCrawl.IndexAPI do
     options = Keyword.merge(@httpoison_options, options)
 
     case HTTPoison.get(url, headers, options) do
-      {:ok, %HTTPoison.Response{body: body}} -> {:ok, parse_response(body)}
+      {:ok, %HTTPoison.Response{body: body, status_code: 200}} -> {:ok, parse_response(body)}
+      {:ok, other} -> {:error, other}
       {:error, reason} -> {:error, reason}
     end
   end
