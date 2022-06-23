@@ -33,4 +33,13 @@ defmodule CommonCrawl do
       {:error, error} -> {:error, error}
     end
   end
+
+  @doc false
+  def update_collinfo_json!() do
+    with {:ok, collinfo} <- get_collinfo() do
+      json_string = collinfo |> Jason.encode!(pretty: true)
+
+      File.write!("priv/collinfo.json", json_string)
+    end
+  end
 end
