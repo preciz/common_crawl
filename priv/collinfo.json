@@ -1,5 +1,11 @@
 [
   {
+    "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2022-27-index",
+    "id": "CC-MAIN-2022-27",
+    "name": "June 2022 Index",
+    "timegate": "https://index.commoncrawl.org/CC-MAIN-2022-27/"
+  },
+  {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2022-21-index",
     "id": "CC-MAIN-2022-21",
     "name": "May 2022 Index",
