@@ -3,7 +3,7 @@ defmodule CommonCrawl.Index do
   Interacting with index files of Common Crawl.
   """
 
-  @s3_base_url "https://commoncrawl.s3.amazonaws.com/"
+  @s3_base_url "https://data.commoncrawl.org/"
 
   @doc """
   Fetches all available index files for a given crawl.
@@ -39,7 +39,7 @@ defmodule CommonCrawl.Index do
   ## Examples
 
       iex> CommonCrawl.Index.url("CC-MAIN-2017-34", "cdx-00203.gz")
-      "https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2017-34/indexes/cdx-00203.gz"
+      "https://data.commoncrawl.org/cc-index/collections/CC-MAIN-2017-34/indexes/cdx-00203.gz"
 
   """
   @spec url(String.t(), String.t()) :: String.t()
@@ -95,7 +95,7 @@ defmodule CommonCrawl.Index do
   ## Examples
 
       iex> CommonCrawl.Index.cluster_idx_url("CC-MAIN-2017-34")
-      "https://commoncrawl.s3.amazonaws.com/cc-index/collections/CC-MAIN-2017-34/indexes/cluster.idx"
+      "https://data.commoncrawl.org/cc-index/collections/CC-MAIN-2017-34/indexes/cluster.idx"
 
   """
   @spec cluster_idx_url(String.t()) :: String.t()

@@ -2,7 +2,7 @@ defmodule CommonCrawl.WARC do
   @moduledoc """
   Common Crawl .warc file download and parsing
   """
-  @s3_base_url "https://commoncrawl.s3.amazonaws.com/"
+  @s3_base_url "https://data.commoncrawl.org/"
 
   @httpoison_options [
     default_timeout: :timer.minutes(2),
