@@ -26,6 +26,7 @@ defmodule CommonCrawl.IndexTest do
            ] =
              stream
              |> Stream.map(&CommonCrawl.Index.parser/1)
+             |> Stream.map(fn {:ok, tuple} -> tuple end)
              |> Enum.filter(fn {_search_key, _timestamp, %{"mime-detected" => mime_detected}} ->
                mime_detected == "application/xhtml+xml"
              end)

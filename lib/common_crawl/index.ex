@@ -66,14 +66,15 @@ defmodule CommonCrawl.Index do
   @doc """
   Parses a line of an index file.
   """
-  @spec parser(Enum.t()) :: list
+  @spec parser(Enum.t()) :: {:ok, {String.t(), integer(), map()}} | {:error, any}
   def parser(line) do
-    [search_key, timestamp, json] = String.split(line, " ", parts: 3)
-
-    timestamp = String.to_integer(timestamp)
-    {:ok, map} = Jason.decode(json)
-
-    {search_key, timestamp, map}
+    with [search_key, timestamp, json] <- String.split(line, " ", parts: 3),
+         timestamp = String.to_integer(timestamp),
+         {:ok, map} <- Jason.decode(json) do
+      {:ok, {search_key, timestamp, map}}
+    else
+      other -> {:error, {line, other}}
+    end
   end
 
   @doc """
