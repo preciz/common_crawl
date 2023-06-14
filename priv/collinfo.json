@@ -1,8 +1,26 @@
 [
   {
+    "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2023-14-index",
+    "id": "CC-MAIN-2023-14",
+    "name": "March/April 2023 Index",
+    "timegate": "https://index.commoncrawl.org/CC-MAIN-2023-14/"
+  },
+  {
+    "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2023-06-index",
+    "id": "CC-MAIN-2023-06",
+    "name": "January/February 2023 Index",
+    "timegate": "https://index.commoncrawl.org/CC-MAIN-2023-06/"
+  },
+  {
+    "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2022-49-index",
+    "id": "CC-MAIN-2022-49",
+    "name": "November/December 2022 Index",
+    "timegate": "https://index.commoncrawl.org/CC-MAIN-2022-49/"
+  },
+  {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2022-40-index",
     "id": "CC-MAIN-2022-40",
-    "name": "September 2022 Index",
+    "name": "September/October 2022 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2022-40/"
   },
   {
@@ -14,7 +32,7 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2022-27-index",
     "id": "CC-MAIN-2022-27",
-    "name": "June 2022 Index",
+    "name": "June/July 2022 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2022-27/"
   },
   {
@@ -32,7 +50,7 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2021-49-index",
     "id": "CC-MAIN-2021-49",
-    "name": "November 2021 Index",
+    "name": "November/December 2021 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2021-49/"
   },
   {
@@ -50,7 +68,7 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2021-31-index",
     "id": "CC-MAIN-2021-31",
-    "name": "July 2021 Index",
+    "name": "July/August 2021 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2021-31/"
   },
   {
@@ -74,7 +92,7 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2021-10-index",
     "id": "CC-MAIN-2021-10",
-    "name": "February 2021 Index",
+    "name": "February/March 2021 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2021-10/"
   },
   {
@@ -86,7 +104,7 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2020-50-index",
     "id": "CC-MAIN-2020-50",
-    "name": "November 2020 Index",
+    "name": "November/December 2020 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2020-50/"
   },
   {
@@ -116,13 +134,13 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2020-24-index",
     "id": "CC-MAIN-2020-24",
-    "name": "May 2020 Index",
+    "name": "May/June 2020 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2020-24/"
   },
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2020-16-index",
     "id": "CC-MAIN-2020-16",
-    "name": "March 2020 Index",
+    "name": "March/April 2020 Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2020-16/"
   },
   {
@@ -530,19 +548,19 @@
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2012-index",
     "id": "CC-MAIN-2012",
-    "name": "Index of 2012 ARC files",
+    "name": "2012 ARC Files Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2012/"
   },
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2009-2010-index",
     "id": "CC-MAIN-2009-2010",
-    "name": "Index of 2009 - 2010 ARC files",
+    "name": "2009 - 2010 ARC Files Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2009-2010/"
   },
   {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2008-2009-index",
     "id": "CC-MAIN-2008-2009",
-    "name": "Index of 2008 - 2009 ARC files",
+    "name": "2008 - 2009 ARC Files Index",
     "timegate": "https://index.commoncrawl.org/CC-MAIN-2008-2009/"
   }
 ]
