@@ -30,7 +30,6 @@ defmodule CommonCrawl.IndexTest do
              |> Enum.filter(fn {_search_key, _timestamp, %{"mime-detected" => mime_detected}} ->
                mime_detected == "application/xhtml+xml"
              end)
-             |> Enum.to_list()
   end
 
   test "filters cluster.idx file" do
