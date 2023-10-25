@@ -69,7 +69,7 @@ defmodule CommonCrawl.Index do
   @spec parser(Enum.t()) :: {:ok, {String.t(), integer(), map()}} | {:error, any}
   def parser(line) do
     with [search_key, timestamp, json] <- String.split(line, " ", parts: 3),
-         timestamp = String.to_integer(timestamp),
+         {timestamp, ""} <- Integer.parse(timestamp),
          {:ok, map} <- Jason.decode(json) do
       {:ok, {search_key, timestamp, map}}
     else
