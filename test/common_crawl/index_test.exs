@@ -85,5 +85,18 @@ defmodule CommonCrawl.IndexTest do
                  mime_detected == "application/xhtml+xml"
                end)
     end
+
+    test "handles invalid line format" do
+      invalid_line = "not enough parts"
+      assert {:error, {^invalid_line, _}} = Index.parser(invalid_line)
+
+      invalid_timestamp = "key invalid_timestamp {}"
+      assert {:error, {^invalid_timestamp, _}} = Index.parser(invalid_timestamp)
+    end
+
+    test "handles invalid JSON" do
+      invalid_json = "key 123456789 {invalid json}"
+      assert {:error, {^invalid_json, _}} = Index.parser(invalid_json)
+    end
   end
 end
