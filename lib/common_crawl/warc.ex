@@ -33,6 +33,7 @@ defmodule CommonCrawl.WARC do
     end
   end
 
+  @spec parse_response_body(binary()) :: [String.t()]
   defp parse_response_body(gzipped_bin) do
     gzipped_bin
     |> :zlib.gunzip()
