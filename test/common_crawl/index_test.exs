@@ -1,5 +1,5 @@
 defmodule CommonCrawl.IndexTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest CommonCrawl.Index
   alias CommonCrawl.Index
 
@@ -10,6 +10,22 @@ defmodule CommonCrawl.IndexTest do
     first = "cc-index/collections/#{crawl_id}/indexes/cdx-00000.gz"
 
     {:ok, [^first | _]} = Index.get_all_paths(crawl_id)
+  end
+
+  @tag :integration
+  test "get_cluster_idx successfully fetches cluster.idx file" do
+    [%{"id" => crawl_id} | _] = CommonCrawl.collinfo()
+
+    assert {:ok, body} = Index.get_cluster_idx(crawl_id)
+    assert is_binary(body)
+  end
+
+  @tag :integration
+  test "get successfully fetches an index file" do
+    [%{"id" => crawl_id} | _] = CommonCrawl.collinfo()
+
+    assert {:ok, body} = Index.get(crawl_id, "cdx-00000.gz")
+    assert is_binary(body)
   end
 
   test "parses index file" do
@@ -50,5 +66,22 @@ defmodule CommonCrawl.IndexTest do
                String.starts_with?(line, "15,126,243,162")
              end)
              |> Enum.to_list()
+  end
+
+  describe "url generation" do
+    test "all_paths_url/1" do
+      assert Index.all_paths_url("CC-MAIN-2021-43") ==
+               "https://data.commoncrawl.org/crawl-data/CC-MAIN-2021-43/cc-index.paths.gz"
+    end
+
+    test "url/2" do
+      assert Index.url("CC-MAIN-2021-43", "cdx-00000.gz") ==
+               "https://data.commoncrawl.org/cc-index/collections/CC-MAIN-2021-43/indexes/cdx-00000.gz"
+    end
+
+    test "cluster_idx_url/1" do
+      assert Index.cluster_idx_url("CC-MAIN-2021-43") ==
+               "https://data.commoncrawl.org/cc-index/collections/CC-MAIN-2021-43/indexes/cluster.idx"
+    end
   end
 end

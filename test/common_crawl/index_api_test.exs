@@ -1,5 +1,5 @@
 defmodule CommonCrawl.IndexAPITest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest CommonCrawl.IndexAPI
 
   test "parses response" do
