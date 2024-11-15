@@ -1,6 +1,16 @@
 defmodule CommonCrawl.IndexTest do
   use ExUnit.Case
   doctest CommonCrawl.Index
+  alias CommonCrawl.Index
+
+  @tag :integration
+  test "get_all_paths" do
+    [%{"id" => crawl_id} | _] = CommonCrawl.collinfo()
+
+    first = "cc-index/collections/#{crawl_id}/indexes/cdx-00000.gz"
+
+    {:ok, [^first | _]} = Index.get_all_paths(crawl_id)
+  end
 
   test "parses index file" do
     stream = File.stream!("test/support/index_snippet")
