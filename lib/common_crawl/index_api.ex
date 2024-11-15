@@ -29,6 +29,7 @@ defmodule CommonCrawl.IndexAPI do
   end
 
   @doc false
+  @spec parse_response(String.t()) :: [{String.t(), integer(), map()}]
   def parse_response(response_body) do
     response_body
     |> String.split("\n", trim: true)
