@@ -13,4 +13,14 @@ defmodule CommonCrawlTest do
              | _
            ] = CommonCrawl.collinfo()
   end
+
+  @tag :integration
+  test "fetches current collinfo" do
+    assert {:ok, [%{} | _]} = CommonCrawl.get_collinfo()
+  end
+
+  @tag :integration
+  test "updates collinfo" do
+    assert :ok = CommonCrawl.update_collinfo!()
+  end
 end
