@@ -12,6 +12,8 @@ defmodule CommonCrawl.WARC do
   @doc """
   Fetches a segment of the WARC file.
   """
+  @spec get_segment(String.t(), integer(), integer(), list(), keyword()) ::
+          {:ok, %{warc: String.t(), headers: String.t(), response: String.t()}} | {:error, any()}
   def get_segment(filename, offset, length, headers \\ [], options \\ [])
       when is_binary(filename) and is_integer(offset) and is_integer(length) do
     url = @s3_base_url <> filename
