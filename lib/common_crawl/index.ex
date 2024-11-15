@@ -3,7 +3,7 @@ defmodule CommonCrawl.Index do
   Interacting with index files of Common Crawl.
   """
 
-  @s3_base_url "https://data.commoncrawl.org/"
+  @s3_base_url Application.compile_env!(:common_crawl, :s3_base_url)
 
   @doc """
   Fetches all available index files for a given crawl.
