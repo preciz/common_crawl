@@ -1,6 +1,28 @@
 defmodule CommonCrawl.IndexAPITest do
   use ExUnit.Case, async: true
   doctest CommonCrawl.IndexAPI
+  alias CommonCrawl.IndexAPI
+
+  @tag :integration
+  test "successfully fetches index data" do
+    [%{"cdx-api" => cdx_api_url} | _] = CommonCrawl.collinfo()
+
+    query = %{
+      "url" => "commoncrawl.org/*",
+      "limit" => "3"
+    }
+
+    assert {:ok, results} = IndexAPI.get(cdx_api_url, query)
+    assert is_list(results)
+    assert length(results) <= 3
+
+    # Check structure of returned data
+    assert [{key, timestamp, metadata} | _] = results
+    assert is_binary(key)
+    assert is_integer(timestamp)
+    assert is_map(metadata)
+    assert Map.has_key?(metadata, "url")
+  end
 
   test "parses response" do
     response_body = File.read!("test/support/api_response")
@@ -22,5 +44,9 @@ defmodule CommonCrawl.IndexAPITest do
               }}
              | _
            ] = CommonCrawl.IndexAPI.parse_response(response_body)
+  end
+
+  test "handles empty response" do
+    assert [] = IndexAPI.parse_response("")
   end
 end
