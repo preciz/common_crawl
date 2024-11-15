@@ -1,6 +1,6 @@
 defmodule CommonCrawl do
   @moduledoc """
-  Interacting with Common Crawl data.
+  CommonCrawl library helps to interact with Common Crawl data.
   """
 
   @collinfo_json_url "https://index.commoncrawl.org/collinfo.json"
