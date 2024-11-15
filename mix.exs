@@ -22,7 +22,7 @@ defmodule CommonCrawl.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.8"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.4"}
     ]
   end
 end
