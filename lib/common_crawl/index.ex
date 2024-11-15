@@ -16,9 +16,7 @@ defmodule CommonCrawl.Index do
 
     case HTTPoison.get(url, headers, options) do
       {:ok, %HTTPoison.Response{body: body}} ->
-        body
-        |> :zlib.gunzip()
-        |> String.split("\n", trim: true)
+        {:ok, :zlib.gunzip(body) |> String.split("\n", trim: true)}
 
       {:error, error} ->
         {:error, error}
