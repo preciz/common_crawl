@@ -10,7 +10,7 @@ defmodule CommonCrawl.IndexAPI do
 
   Further info: [https://github.com/webrecorder/pywb/wiki/CDX-Server-API#api-reference](https://github.com/webrecorder/pywb/wiki/CDX-Server-API#api-reference)
   """
-  @receive_timeout Application.compile_env!(:common_crawl, :receive_timeout)
+  @receive_timeout Application.compile_env(:common_crawl, :receive_timeout, 120_000)
 
   @spec get(String.t(), Enum.t(), keyword) :: {:ok, list} | {:error, any}
   def get(cdx_api_url, query, opts \\ []) do
