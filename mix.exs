@@ -7,14 +7,14 @@ defmodule CommonCrawl.MixProject do
   def project do
     [
       app: :common_crawl,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
 
       # Hex
       package: package(),
-      description: "Common Crawl API and WARC file parser",
+      description: "Common Crawl API, WARC file parser",
 
       # Docs
       name: "CommonCrawl",
