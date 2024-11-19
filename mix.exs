@@ -33,7 +33,8 @@ defmodule CommonCrawl.MixProject do
   defp deps do
     [
       {:req, "~> 0.5"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
   end
 
