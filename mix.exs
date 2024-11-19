@@ -14,7 +14,7 @@ defmodule CommonCrawl.MixProject do
 
       # Hex
       package: package(),
-      description: "Common Crawl API, WARC file parser",
+      description: "Work with Common Crawl data",
 
       # Docs
       name: "CommonCrawl",
