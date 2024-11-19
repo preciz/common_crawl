@@ -3,24 +3,26 @@ defmodule CommonCrawl.WARC do
   Common Crawl .warc file download and parsing
   """
   @s3_base_url Application.compile_env!(:common_crawl, :s3_base_url)
-
-  @httpoison_options [
-    default_timeout: :timer.minutes(2),
-    recv_timeout: :timer.minutes(2)
-  ]
+  @receive_timeout Application.compile_env!(:common_crawl, :receive_timeout)
 
   @doc """
   Fetches a segment of the WARC file.
   """
-  @spec get_segment(String.t(), integer(), integer(), list(), keyword()) ::
+  @spec get_segment(String.t(), integer(), integer(), keyword()) ::
           {:ok, %{warc: String.t(), headers: String.t(), response: String.t()}} | {:error, any()}
-  def get_segment(filename, offset, length, headers \\ [], options \\ [])
+  def get_segment(filename, offset, length, opts \\ [])
       when is_binary(filename) and is_integer(offset) and is_integer(length) do
     url = @s3_base_url <> filename
-    options = Keyword.merge(@httpoison_options, options)
-    headers = headers ++ [{"Range", "bytes=#{offset}-#{offset + length - 1}"}]
 
-    case HTTPoison.get(url, headers, options) do
+    headers =
+      Enum.concat(opts[:headers] || [], [{"Range", "bytes=#{offset}-#{offset + length - 1}"}])
+
+    opts =
+      opts
+      |> Keyword.put(:headers, headers)
+      |> Keyword.put_new(:receive_timeout, @receive_timeout)
+
+    case Req.get(url, opts) do
       {:ok, %{body: body}} ->
         case parse_response_body(body) do
           [warc, headers, response] ->

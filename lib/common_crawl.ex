@@ -27,9 +27,9 @@ defmodule CommonCrawl do
   Fetches current collinfo with all available crawls.
   """
   @spec get_collinfo() :: {:ok, [map]} | {:error, any}
-  def get_collinfo(headers \\ [], options \\ []) do
-    case HTTPoison.get(@collinfo_json_url, headers, options) do
-      {:ok, %HTTPoison.Response{body: body}} -> Jason.decode(body)
+  def get_collinfo(opts \\ []) do
+    case Req.get(@collinfo_json_url, opts) do
+      {:ok, %Req.Response{body: body}} -> {:ok, body}
       {:error, error} -> {:error, error}
     end
   end

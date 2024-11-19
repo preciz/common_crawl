@@ -3,11 +3,6 @@ defmodule CommonCrawl.IndexAPI do
   Interacting with Common Crawl index search API.
   """
 
-  @httpoison_options [
-    default_timeout: :timer.minutes(2),
-    recv_timeout: :timer.minutes(2)
-  ]
-
   @doc """
   The `cdx_api_url` can be found in `CommonCrawl.collinfo()`.
 
@@ -15,14 +10,16 @@ defmodule CommonCrawl.IndexAPI do
 
   Further info: [https://github.com/webrecorder/pywb/wiki/CDX-Server-API#api-reference](https://github.com/webrecorder/pywb/wiki/CDX-Server-API#api-reference)
   """
-  @spec get(String.t(), Enum.t(), keyword, keyword) :: {:ok, list} | {:error, any}
-  def get(cdx_api_url, query, headers \\ [], options \\ []) do
+  @receive_timeout Application.compile_env!(:common_crawl, :receive_timeout)
+
+  @spec get(String.t(), Enum.t(), keyword) :: {:ok, list} | {:error, any}
+  def get(cdx_api_url, query, opts \\ []) do
     query = URI.encode_query(query)
     url = cdx_api_url <> "?#{query}"
-    options = Keyword.merge(@httpoison_options, options)
+    opts = Keyword.put_new(opts, :receive_timeout, @receive_timeout)
 
-    case HTTPoison.get(url, headers, options) do
-      {:ok, %HTTPoison.Response{body: body, status_code: 200}} -> {:ok, parse_response(body)}
+    case Req.get(url, opts) do
+      {:ok, %Req.Response{body: body, status: 200}} -> {:ok, parse_response(body)}
       {:ok, other} -> {:error, other}
       {:error, reason} -> {:error, reason}
     end

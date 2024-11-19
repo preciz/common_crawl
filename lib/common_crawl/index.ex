@@ -10,12 +10,11 @@ defmodule CommonCrawl.Index do
   At the end of the list will be the "metadata.yaml" and the "cluster.idx" files.
   """
   @spec get_all_paths(String.t()) :: {:ok, [String.t()]} | {:error, any}
-  def get_all_paths("CC-MAIN-" <> _rest = crawl_id, headers \\ [], options \\ [])
-      when is_binary(crawl_id) do
+  def get_all_paths("CC-MAIN-" <> _rest = crawl_id, opts \\ []) when is_binary(crawl_id) do
     url = all_paths_url(crawl_id)
 
-    case HTTPoison.get(url, headers, options) do
-      {:ok, %HTTPoison.Response{body: body}} ->
+    case Req.get(url, opts) do
+      {:ok, %Req.Response{body: body}} ->
         {:ok, :zlib.gunzip(body) |> String.split("\n", trim: true)}
 
       {:error, error} ->
@@ -49,15 +48,12 @@ defmodule CommonCrawl.Index do
   Fetches a gzipped index file.
   """
   @spec get(String.t(), String.t()) :: {:ok, binary} | {:error, any}
-  def get("CC-MAIN-" <> _rest = crawl_id, filename, headers \\ [], options \\ []) do
+  def get("CC-MAIN-" <> _rest = crawl_id, filename, opts \\ []) do
     url = url(crawl_id, filename)
 
-    case HTTPoison.get(url, headers, options) do
-      {:ok, %HTTPoison.Response{body: body}} ->
-        {:ok, body}
-
-      {:error, error} ->
-        {:error, error}
+    case Req.get(url, opts) do
+      {:ok, %Req.Response{body: body}} -> {:ok, body}
+      {:error, error} -> {:error, error}
     end
   end
 
@@ -79,11 +75,11 @@ defmodule CommonCrawl.Index do
   Fetches the cluster.idx file.
   """
   @spec get_cluster_idx(String.t()) :: {:ok, binary} | {:error, any}
-  def get_cluster_idx("CC-MAIN-" <> _rest = crawl_id, headers \\ [], options \\ []) do
+  def get_cluster_idx("CC-MAIN-" <> _rest = crawl_id, opts \\ []) do
     url = cluster_idx_url(crawl_id)
 
-    case HTTPoison.get(url, headers, options) do
-      {:ok, %HTTPoison.Response{body: body}} -> {:ok, body}
+    case Req.get(url, opts) do
+      {:ok, %Req.Response{body: body}} -> {:ok, body}
       {:error, error} -> {:error, error}
     end
   end

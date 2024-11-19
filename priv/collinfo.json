@@ -1,5 +1,13 @@
 [
   {
+    "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2024-46-index",
+    "from": "2024-11-01T18:42:24",
+    "id": "CC-MAIN-2024-46",
+    "name": "November 2024 Index",
+    "timegate": "https://index.commoncrawl.org/CC-MAIN-2024-46/",
+    "to": "2024-11-15T05:19:00"
+  },
+  {
     "cdx-api": "https://index.commoncrawl.org/CC-MAIN-2024-42-index",
     "from": "2024-10-03T09:40:20",
     "id": "CC-MAIN-2024-42",
