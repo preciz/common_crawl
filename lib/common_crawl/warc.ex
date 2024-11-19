@@ -10,7 +10,8 @@ defmodule CommonCrawl.WARC do
   """
   @spec get_segment(String.t(), integer(), integer(), keyword()) ::
           {:ok, %{warc: String.t(), headers: String.t(), response: String.t()}} | {:error, any()}
-  def get_segment(filename, offset, length, opts \\ []) when is_binary(filename) and is_integer(offset) and is_integer(length) and length > 0 do
+  def get_segment(filename, offset, length, opts \\ [])
+      when is_binary(filename) and is_integer(offset) and is_integer(length) and length > 0 do
     url = @s3_base_url <> filename
 
     headers =

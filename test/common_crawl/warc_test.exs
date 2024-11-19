@@ -16,12 +16,13 @@ defmodule CommonCrawl.WARCTest do
   # }}
 
   @sample_warc_filename "crawl-data/CC-MAIN-2024-46/segments/1730477397531.96/warc/CC-MAIN-20241114225955-20241115015955-00238.warc.gz"
-  @sample_offset 669481092
+  @sample_offset 669_481_092
   @sample_length 1258
 
   @tag :integration
   test "successfully fetches WARC segment" do
-    assert {:ok, response} = WARC.get_segment(@sample_warc_filename, @sample_offset, @sample_length)
+    assert {:ok, response} =
+             WARC.get_segment(@sample_warc_filename, @sample_offset, @sample_length)
 
     assert %{warc: warc, headers: headers, response: response} = response
     assert is_binary(warc)
