@@ -48,7 +48,7 @@ defmodule CommonCrawl.MixProject do
 
   defp docs do
     [
-      main: "Tmp",
+      main: "CommonCrawl",
       source_ref: "v#{@version}",
       source_url: @github
     ]
