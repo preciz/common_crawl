@@ -1,5 +1,7 @@
 # CommonCrawl
 
+[![test](https://github.com/preciz/common_crawl/actions/workflows/test.yml/badge.svg)](https://github.com/preciz/common_crawl/actions/workflows/test.yml)
+
 Work with Common Crawl data from Elixir.
 
 ## Installation
