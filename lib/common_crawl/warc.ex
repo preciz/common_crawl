@@ -2,7 +2,11 @@ defmodule CommonCrawl.WARC do
   @moduledoc """
   Common Crawl .warc file download and parsing
   """
-  @s3_base_url Application.compile_env(:common_crawl, :s3_base_url, "https://commoncrawl.s3.amazonaws.com/")
+  @s3_base_url Application.compile_env(
+                 :common_crawl,
+                 :s3_base_url,
+                 "https://commoncrawl.s3.amazonaws.com/"
+               )
   @receive_timeout Application.compile_env(:common_crawl, :receive_timeout, 120_000)
 
   @doc """
