@@ -54,6 +54,7 @@ defmodule CommonCrawl do
 
   @doc """
   Fetches current collinfo with all available crawls.
+  Make sure to cache it and to not make repeated requests.
   """
   @spec get_collinfo() :: {:ok, [map]} | {:error, any}
   def get_collinfo(opts \\ []) do
@@ -63,6 +64,8 @@ defmodule CommonCrawl do
     end
   end
 
+  # for updating the collinfo.json file in priv
+  # not for general use, if you want latest collinfo, use get_collinfo/0 and cache it yourself
   @doc false
   def update_collinfo!() do
     {:ok, collinfo} = get_collinfo()
