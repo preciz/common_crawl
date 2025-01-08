@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0] - 2025-01-09
+
+### Added
+- New `stream/2` function to efficiently process index entries
+
+### Changed
+- Removed `filter_cluster_idx/2` in favor of new streaming API
+
 ## [0.2.0] - 2025-01-08
 
 ### Added
