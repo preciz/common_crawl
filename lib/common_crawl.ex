@@ -4,7 +4,7 @@ defmodule CommonCrawl do
   """
 
   @collinfo_json_url "https://index.commoncrawl.org/collinfo.json"
-  @collinfo File.read!("priv/collinfo.json") |> Jason.decode!()
+  @collinfo File.read!("priv/collinfo.json") |> JSON.decode!()
 
   @doc """
   Cached collinfo from disk.
@@ -37,7 +37,7 @@ defmodule CommonCrawl do
   @doc false
   def update_collinfo!() do
     {:ok, collinfo} = get_collinfo()
-    json_string = collinfo |> Jason.encode!(pretty: true)
+    json_string = collinfo |> JSON.encode!()
 
     File.write!("priv/collinfo.json", json_string)
   end

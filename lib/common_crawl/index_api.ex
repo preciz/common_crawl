@@ -34,7 +34,7 @@ defmodule CommonCrawl.IndexAPI do
       [search_key, timestamp, json] = String.split(line, " ", parts: 3)
 
       timestamp = String.to_integer(timestamp)
-      {:ok, map} = Jason.decode(json)
+      {:ok, map} = JSON.decode(json)
 
       {search_key, timestamp, map}
     end)

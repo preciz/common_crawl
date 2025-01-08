@@ -68,7 +68,7 @@ defmodule CommonCrawl.Index do
   def parser(line) do
     with [search_key, timestamp, json] <- String.split(line, " ", parts: 3),
          {timestamp, ""} <- Integer.parse(timestamp),
-         {:ok, map} <- Jason.decode(json) do
+         {:ok, map} <- JSON.decode(json) do
       {:ok, {search_key, timestamp, map}}
     else
       other -> {:error, {line, other}}
