@@ -1,14 +1,14 @@
 defmodule CommonCrawl.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @github "https://github.com/preciz/common_crawl"
 
   def project do
     [
       app: :common_crawl,
       version: @version,
-      elixir: "~> 1.12",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
 
@@ -33,8 +33,7 @@ defmodule CommonCrawl.MixProject do
   defp deps do
     [
       {:req, "~> 0.5"},
-      {:jason, "~> 1.4"},
-      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.36", only: :dev, runtime: false}
     ]
   end
 
