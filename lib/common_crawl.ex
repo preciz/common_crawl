@@ -55,6 +55,19 @@ defmodule CommonCrawl do
   @doc """
   Fetches current collinfo with all available crawls.
   Make sure to cache it and to not make repeated requests.
+
+  ## Examples
+
+      iex> CommonCrawl.get_collinfo()
+      {:ok, [
+        %{
+          "cdx-api" => "https://index.commoncrawl.org/CC-MAIN-2024-01-index",
+          "id" => "CC-MAIN-2024-01",
+          "name" => "January 2024 Index",
+          "timegate" => "https://index.commoncrawl.org/CC-MAIN-2024-01/"
+        },
+        # ...more entries
+      ]}
   """
   @spec get_collinfo() :: {:ok, [map]} | {:error, any}
   def get_collinfo(opts \\ []) do
