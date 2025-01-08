@@ -23,6 +23,7 @@ defmodule CommonCrawl.IndexAPITest do
     assert Map.has_key?(metadata, "url")
   end
 
+  @tag :integration
   test "get_latest_for_url returns latest entry when found" do
     url = "https://example.com"
     result = IndexAPI.get_latest_for_url(url)
@@ -33,6 +34,7 @@ defmodule CommonCrawl.IndexAPITest do
     assert is_map(metadata)
   end
 
+  @tag :integration
   test "get_latest_for_url returns nil when no entries found" do
     assert nil == IndexAPI.get_latest_for_url("https://non-existing-url.example")
   end

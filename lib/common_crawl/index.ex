@@ -3,6 +3,8 @@ defmodule CommonCrawl.Index do
   Interacting with index files of Common Crawl.
   """
 
+  require Logger
+
   @base_url Application.compile_env(:common_crawl, :base_url, "https://data.commoncrawl.org/")
 
   @doc """
@@ -99,30 +101,58 @@ defmodule CommonCrawl.Index do
   end
 
   @doc """
-  Filter filenames from cluster.idx with a given function.
-  Returns a stream.
+  Creates a stream of parsed index entries from index files.
+
+  ## Options
+    * `:preprocess_fun` - function to preprocess the stream before processing (default: & &1)
+    * `:dir` - temporary directory for storing downloaded files (default: System.tmp_dir!())
 
   ## Examples
 
-      # Get index files with ".de" TLDs.
-      index_files =
-        CommonCrawl.Index.filter_cluster_idx(
-          cluster_idx,
-          fn line -> String.starts_with?(line, "de") end
-        )
-        |> Enum.to_list()
+      # Stream all index entries
+      CommonCrawl.Index.stream("CC-MAIN-2024-51")
 
+      # Stream only German domains and shuffle them before processing
+      CommonCrawl.Index.stream("CC-MAIN-2024-51", preprocess_fun: fn stream ->
+        stream
+        |> Stream.filter(&String.starts_with?(&1, "de"))
+        |> Enum.shuffle()
+      end)
   """
-  @spec filter_cluster_idx(binary, function) :: list
-  def filter_cluster_idx(cluster_idx, fun) when is_function(fun, 1) do
+  @spec stream(String.t(), keyword()) :: Stream.t()
+  def stream(crawl_id, opts \\ []) do
+    preprocess_fun = Keyword.get(opts, :preprocess_fun, & &1)
+    dir = Keyword.get(opts, :dir, System.tmp_dir!())
+
+    # Get all index files
+    {:ok, cluster_idx} = get_cluster_idx(crawl_id)
+
     cluster_idx
     |> String.split("\n", trim: true)
-    |> Stream.filter(fun)
+    |> Stream.uniq()
+    |> preprocess_fun.()
     |> Stream.map(fn line ->
       [_, index_filename | _] = line |> String.split("\t")
 
       index_filename
     end)
-    |> Stream.uniq()
+    |> Stream.flat_map(fn filename ->
+      {:ok, index_gzipped} = get(crawl_id, filename)
+      path = Path.join(dir, filename)
+      File.write!(path, index_gzipped)
+
+      path
+      |> File.stream!([:compressed])
+      |> Stream.map(&parser/1)
+    end)
+    |> Stream.filter(fn
+      {:ok, _tuple} ->
+        true
+
+      {:error, reason} ->
+        Logger.warning("Failed to parse index entry: #{inspect(reason)}")
+        false
+    end)
+    |> Stream.map(fn {:ok, tuple} -> tuple end)
   end
 end

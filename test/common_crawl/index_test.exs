@@ -28,14 +28,15 @@ defmodule CommonCrawl.IndexTest do
     assert is_binary(body)
   end
 
-  test "filters cluster.idx file" do
-    cluster_idx = File.read!("test/support/cluster_idx_snippet")
-
-    assert ["cdx-00000.gz"] =
-             Index.filter_cluster_idx(cluster_idx, fn line ->
-               String.starts_with?(line, "15,126,243,162")
-             end)
-             |> Enum.to_list()
+  @tag :integration
+  test "stream" do
+    assert [{_, _, %{}}] =
+             CommonCrawl.Index.stream("CC-MAIN-2024-51",
+               preprocess_fun: fn stream ->
+                 stream |> Stream.filter(&String.starts_with?(&1, "de,"))
+               end
+             )
+             |> Enum.take(1)
   end
 
   describe "url generation" do
