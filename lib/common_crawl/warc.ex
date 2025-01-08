@@ -20,9 +20,9 @@ defmodule CommonCrawl.WARC do
 
       {:ok,
        %{
-         warc: "WARC/1.0\r\nWARC-Type: response\r\nWARC-Date: 2024...",
-         headers: "HTTP/1.1 200 OK\r\nContent-Type: text/html...",
-         response: "<!doctype html>\n<html>\n<head>\n<title>Example..."
+         warc: "WARC/1.0\\r\\nWARC-Type: response\\r\\nWARC-Date: 2024...",
+         headers: "HTTP/1.1 200 OK\\r\\nContent-Type: text/html...", 
+         response: "&lt;!doctype html&gt;\\n&lt;html&gt;\\n&lt;head&gt;\\n&lt;title&gt;Example..."
        }}
   """
   @spec get_segment(String.t(), integer(), integer(), keyword()) ::

@@ -13,9 +13,9 @@ defmodule CommonCrawl do
       iex> CommonCrawl.get_latest_for_url("https://example.com")
       {:ok,
        %{
-         warc: "WARC/1.0\r\nWARC-Type: response\r\nWARC-Date: 2024-01-14...",
-         headers: "HTTP/1.1 200 OK\r\nContent-Type: text/html...",
-         response: "<!doctype html>\n<html>\n<head>\n<title>Example Domain</title>..."
+         warc: "WARC/1.0\\r\\nWARC-Type: response\\r\\nWARC-Date: 2024-01-14...",
+         headers: "HTTP/1.1 200 OK\\r\\nContent-Type: text/html...",
+         response: "<!doctype html>\\n<html>\\n<head>\\n<title>Example Domain</title>..."
        }}
   """
   @spec get_latest_for_url(String.t(), keyword()) :: {:ok, map()} | {:error, any()}
