@@ -7,6 +7,23 @@ defmodule CommonCrawl.WARC do
 
   @doc """
   Fetches a segment of the WARC file.
+
+  ## Examples
+
+      iex> CommonCrawl.WARC.get_segment(
+      ...>   "crawl-data/CC-MAIN-2024-51/segments/1733066125982.36/warc/CC-MAIN-20241214181735-20241214211735-00433.warc.gz",
+      ...>   36544657,
+      ...>   1223
+      ...> )
+
+  ## Return Value
+
+      {:ok,
+       %{
+         warc: "WARC/1.0\r\nWARC-Type: response\r\nWARC-Date: 2024...",
+         headers: "HTTP/1.1 200 OK\r\nContent-Type: text/html...",
+         response: "<!doctype html>\n<html>\n<head>\n<title>Example..."
+       }}
   """
   @spec get_segment(String.t(), integer(), integer(), keyword()) ::
           {:ok, %{warc: String.t(), headers: String.t(), response: String.t()}} | {:error, any()}

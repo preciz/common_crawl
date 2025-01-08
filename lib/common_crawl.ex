@@ -3,6 +3,35 @@ defmodule CommonCrawl do
   CommonCrawl library helps to interact with Common Crawl data.
   """
 
+  alias CommonCrawl.{IndexAPI, WARC}
+
+  @doc """
+  Fetches the latest available crawl data for a given URL.
+
+  ## Examples
+
+      iex> CommonCrawl.get_latest_for_url("https://example.com")
+      {:ok,
+       %{
+         warc: "WARC/1.0\r\nWARC-Type: response\r\nWARC-Date: 2024-01-14...",
+         headers: "HTTP/1.1 200 OK\r\nContent-Type: text/html...",
+         response: "<!doctype html>\n<html>\n<head>\n<title>Example Domain</title>..."
+       }}
+  """
+  @spec get_latest_for_url(String.t(), keyword()) :: {:ok, map()} | {:error, any()}
+  def get_latest_for_url(url, opts \\ []) when is_binary(url) do
+    case IndexAPI.get_latest_for_url(url, opts) do
+      {_search_key, _timestamp, map} ->
+        with {offset, ""} <- Integer.parse(map["offset"]),
+             {length, ""} <- Integer.parse(map["length"]) do
+          WARC.get_segment(map["filename"], offset, length, opts)
+        end
+
+      nil ->
+        {:error, :not_found}
+    end
+  end
+
   @collinfo_json_url "https://index.commoncrawl.org/collinfo.json"
   @collinfo File.read!("priv/collinfo.json") |> JSON.decode!()
 
