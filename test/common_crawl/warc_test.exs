@@ -2,22 +2,22 @@ defmodule CommonCrawl.WARCTest do
   use ExUnit.Case, async: true
   alias CommonCrawl.WARC
 
-  # {"com,example)/", 20241114232932, %{
-  #  "digest" => "JI6OR3QR4CI526JD6TMMNZNV4QPMPQCH",
-  #  "encoding" => "UTF-8",
-  #  "filename" => ,
-  #  "languages" => "eng",
-  #  "length" => "1258",
-  #  "mime" => "text/html",
-  #  "mime-detected" => "text/html",
-  #  "offset" => "669481092",
-  #  "status" => "200",
-  #  "url" => "https://www.example.com"
-  # }}
+  # %{
+  # "digest" => "UGGJSSRBRVWLOGBUN6V7WMIQZE3NVGT7",
+  # "encoding" => "ISO-8859-1",
+  # "filename" => "crawl-data/CC-MAIN-2024-51/segments/1733066460657.93/warc/CC-MAIN-20241209024434-20241209054434-00482.warc.gz",
+  # "languages" => "deu",
+  # "length" => "1032",
+  # "mime" => "text/html",
+  # "mime-detected" => "text/html",
+  # "offset" => "373777748",
+  # "status" => "200",
+  # "url" => "https://muenchen.info/"
+  # }
 
-  @sample_warc_filename "crawl-data/CC-MAIN-2024-46/segments/1730477397531.96/warc/CC-MAIN-20241114225955-20241115015955-00238.warc.gz"
-  @sample_offset 669_481_092
-  @sample_length 1258
+  @sample_warc_filename "crawl-data/CC-MAIN-2024-51/segments/1733066460657.93/warc/CC-MAIN-20241209024434-20241209054434-00482.warc.gz"
+  @sample_offset 373_777_748
+  @sample_length 1032
 
   @tag :integration
   test "successfully fetches WARC segment" do

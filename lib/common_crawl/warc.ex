@@ -2,11 +2,7 @@ defmodule CommonCrawl.WARC do
   @moduledoc """
   Common Crawl .warc file download and parsing
   """
-  @s3_base_url Application.compile_env(
-                 :common_crawl,
-                 :s3_base_url,
-                 "https://commoncrawl.s3.amazonaws.com/"
-               )
+  @base_url Application.compile_env(:common_crawl, :base_url, "https://data.commoncrawl.org/")
   @receive_timeout Application.compile_env(:common_crawl, :receive_timeout, 120_000)
 
   @doc """
@@ -16,7 +12,7 @@ defmodule CommonCrawl.WARC do
           {:ok, %{warc: String.t(), headers: String.t(), response: String.t()}} | {:error, any()}
   def get_segment(filename, offset, length, opts \\ [])
       when is_binary(filename) and is_integer(offset) and is_integer(length) and length > 0 do
-    url = @s3_base_url <> filename
+    uri = URI.merge(@base_url, filename)
 
     headers =
       Enum.concat(opts[:headers] || [], [{"Range", "bytes=#{offset}-#{offset + length - 1}"}])
@@ -26,7 +22,7 @@ defmodule CommonCrawl.WARC do
       |> Keyword.put(:headers, headers)
       |> Keyword.put_new(:receive_timeout, @receive_timeout)
 
-    case Req.get(url, opts) do
+    case Req.get(uri, opts) do
       {:ok, %{body: body}} ->
         case parse_response_body(body) do
           [warc, headers, response] ->

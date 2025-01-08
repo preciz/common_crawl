@@ -3,11 +3,7 @@ defmodule CommonCrawl.Index do
   Interacting with index files of Common Crawl.
   """
 
-  @s3_base_url Application.compile_env(
-                 :common_crawl,
-                 :s3_base_url,
-                 "https://data.commoncrawl.org/"
-               )
+  @base_url Application.compile_env(:common_crawl, :base_url, "https://data.commoncrawl.org/")
 
   @doc """
   Fetches all available index files for a given crawl.
@@ -31,7 +27,7 @@ defmodule CommonCrawl.Index do
   """
   @spec all_paths_url(String.t()) :: String.t()
   def all_paths_url("CC-MAIN-" <> _rest = crawl_id) do
-    @s3_base_url <> "crawl-data/" <> crawl_id <> "/cc-index.paths.gz"
+    @base_url <> "crawl-data/" <> crawl_id <> "/cc-index.paths.gz"
   end
 
   @doc """
@@ -45,7 +41,7 @@ defmodule CommonCrawl.Index do
   """
   @spec url(String.t(), String.t()) :: String.t()
   def url("CC-MAIN-" <> _rest = crawl_id, filename) do
-    @s3_base_url <> "cc-index/collections/#{crawl_id}/indexes/#{filename}"
+    @base_url <> "cc-index/collections/#{crawl_id}/indexes/#{filename}"
   end
 
   @doc """
@@ -99,7 +95,7 @@ defmodule CommonCrawl.Index do
   """
   @spec cluster_idx_url(String.t()) :: String.t()
   def cluster_idx_url("CC-MAIN-" <> _rest = crawl_id) do
-    @s3_base_url <> "cc-index/collections/#{crawl_id}/indexes/cluster.idx"
+    @base_url <> "cc-index/collections/#{crawl_id}/indexes/cluster.idx"
   end
 
   @doc """
