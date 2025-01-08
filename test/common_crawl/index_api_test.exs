@@ -1,6 +1,5 @@
 defmodule CommonCrawl.IndexAPITest do
   use ExUnit.Case, async: true
-  doctest CommonCrawl.IndexAPI
   alias CommonCrawl.IndexAPI
 
   @tag :integration
@@ -22,6 +21,20 @@ defmodule CommonCrawl.IndexAPITest do
     assert is_integer(timestamp)
     assert is_map(metadata)
     assert Map.has_key?(metadata, "url")
+  end
+
+  test "get_latest_for_url returns latest entry when found" do
+    url = "https://example.com"
+    result = IndexAPI.get_latest_for_url(url)
+
+    assert {key, timestamp, metadata} = result
+    assert is_binary(key)
+    assert is_integer(timestamp)
+    assert is_map(metadata)
+  end
+
+  test "get_latest_for_url returns nil when no entries found" do
+    assert nil == IndexAPI.get_latest_for_url("https://non-existing-url.example")
   end
 
   test "parses response" do

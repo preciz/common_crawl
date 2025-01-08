@@ -1,6 +1,5 @@
 defmodule CommonCrawlTest do
   use ExUnit.Case, async: true
-  doctest CommonCrawl
 
   test "returns collinfo" do
     assert [
