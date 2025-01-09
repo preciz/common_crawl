@@ -55,3 +55,5 @@ end)
 ## Docs
 The docs can be found at [https://hexdocs.pm/common_crawl](https://hexdocs.pm/common_crawl).
 
+## License
+CommonCrawl is [MIT Licensed](LICENSE)
