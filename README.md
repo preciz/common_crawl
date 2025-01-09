@@ -19,6 +19,9 @@ end
 ## Usage Examples
 
 ```elixir
+# Get latest available crawl of a URL
+{:ok, %{response: _, headers: _, warc: _}} = CommonCrawl.get_latest_for_url("https://example.com")
+
 # Get list of available crawls
 crawls = CommonCrawl.collinfo()
 
@@ -36,9 +39,6 @@ crawl = List.first(crawls)
   metadata["offset"],
   metadata["length"]
 )
-
-# Get latest available crawl of a URL
-{:ok, %{response: _, headers: _, warc: _}} = CommonCrawl.get_latest_for_url("https://example.com")
 
 # Stream all entries from index files
 CommonCrawl.Index.stream("CC-MAIN-2024-51")
