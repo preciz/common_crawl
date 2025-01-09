@@ -37,7 +37,7 @@ crawl = List.first(crawls)
   metadata["length"]
 )
 
-# Get latest available version of a URL across recent crawls
+# Get latest available crawl of a URL
 {:ok, %{response: _, headers: _, warc: _}} = CommonCrawl.get_latest_for_url("https://example.com")
 
 # Stream all entries from index files
