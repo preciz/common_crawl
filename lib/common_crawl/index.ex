@@ -119,7 +119,7 @@ defmodule CommonCrawl.Index do
         |> Enum.shuffle()
       end)
   """
-  @spec stream(String.t(), keyword()) :: Stream.t()
+  @spec stream(String.t(), keyword()) :: Enumerable.t()
   def stream(crawl_id, opts \\ []) do
     preprocess_fun = Keyword.get(opts, :preprocess_fun, & &1)
     dir = Keyword.get(opts, :dir, System.tmp_dir!())
