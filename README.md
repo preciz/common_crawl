@@ -37,6 +37,16 @@ crawl = List.first(crawls)
   metadata["length"]
 )
 
+# Get latest available version of a URL across recent crawls
+{:ok, %{response: _, headers: _, warc: _}} = CommonCrawl.get_latest_for_url("https://example.com")
+
+# Stream all entries from index files
+CommonCrawl.Index.stream("CC-MAIN-2024-51")
+|> Stream.filter(fn {_key, _timestamp, metadata} ->
+  metadata["status"] == "200"
+end)
+|> Enum.take(10)
+
 # Work with raw index files
 {:ok, index_paths} = CommonCrawl.Index.get_all_paths("CC-MAIN-2021-43")
 {:ok, index_file} = CommonCrawl.Index.get("CC-MAIN-2021-43", List.first(index_paths))
