@@ -10,6 +10,18 @@ defmodule CommonCrawl.Index do
   @doc """
   Fetches all available index files for a given crawl.
   At the end of the list will be the "metadata.yaml" and the "cluster.idx" files.
+
+  ## Examples
+
+      iex> CommonCrawl.Index.get_all_paths("CC-MAIN-2024-51")
+      {:ok, [
+        "cc-index/collections/CC-MAIN-2024-51/indexes/cdx-00000.gz",
+        "cc-index/collections/CC-MAIN-2024-51/indexes/cdx-00001.gz",
+        # ... more index files
+        "cc-index/collections/CC-MAIN-2024-51/indexes/metadata.yaml",
+        "cc-index/collections/CC-MAIN-2024-51/indexes/cluster.idx"
+      ]}
+
   """
   @spec get_all_paths(String.t()) :: {:ok, [String.t()]} | {:error, any}
   def get_all_paths("CC-MAIN-" <> _rest = crawl_id, opts \\ []) when is_binary(crawl_id) do
@@ -26,6 +38,12 @@ defmodule CommonCrawl.Index do
 
   @doc """
   Returns URL of the file containing the index paths for a given crawl ID.
+
+  ## Examples
+
+      iex> CommonCrawl.Index.all_paths_url("CC-MAIN-2017-34")
+      "https://data.commoncrawl.org/crawl-data/CC-MAIN-2017-34/cc-index.paths.gz"
+
   """
   @spec all_paths_url(String.t()) :: String.t()
   def all_paths_url("CC-MAIN-" <> _rest = crawl_id) do
@@ -48,6 +66,12 @@ defmodule CommonCrawl.Index do
 
   @doc """
   Fetches a gzipped index file.
+
+  ## Examples
+
+      iex> CommonCrawl.Index.get("CC-MAIN-2024-51", "cdx-00000.gz")
+      {:ok, <<31, 139, 8, 0, 0, 0, 0, 0, 0, 3, ...>>}
+
   """
   @spec get(String.t(), String.t()) :: {:ok, binary} | {:error, any}
   def get("CC-MAIN-" <> _rest = crawl_id, filename, opts \\ []) do
@@ -60,7 +84,14 @@ defmodule CommonCrawl.Index do
   end
 
   @doc """
-  Parses a line of an index file.
+  Parses a line of an index file into a tuple containing the search key, timestamp, and metadata map.
+
+  ## Examples
+
+      iex> line = "com,example)/ 20240108123456 {\"url\": \"http://www.example.com\"}"
+      iex> CommonCrawl.Index.parser(line)
+      {:ok, {"com,example)/", 20240108123456, %{"url" => "http://www.example.com"}}}
+
   """
   @spec parser(Enum.t()) :: {:ok, {String.t(), integer(), map()}} | {:error, any}
   def parser(line) do
@@ -75,6 +106,12 @@ defmodule CommonCrawl.Index do
 
   @doc """
   Fetches the cluster.idx file.
+
+  ## Examples
+
+      iex> CommonCrawl.Index.get_cluster_idx("CC-MAIN-2024-51")
+      {:ok, "0,100,22,165)/ 20241209080420..."}
+
   """
   @spec get_cluster_idx(String.t()) :: {:ok, binary} | {:error, any}
   def get_cluster_idx("CC-MAIN-" <> _rest = crawl_id, opts \\ []) do
@@ -118,6 +155,7 @@ defmodule CommonCrawl.Index do
         |> Stream.filter(&String.starts_with?(&1, "de"))
         |> Enum.shuffle()
       end)
+
   """
   @spec stream(String.t(), keyword()) :: Enumerable.t()
   def stream(crawl_id, opts \\ []) do

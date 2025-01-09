@@ -1,6 +1,17 @@
 defmodule CommonCrawl.IndexTest do
   use ExUnit.Case, async: true
-  doctest CommonCrawl.Index
+
+  doctest CommonCrawl.Index,
+    except: [
+      get: 2,
+      get: 3,
+      get_all_paths: 1,
+      get_all_paths: 2,
+      parser: 1,
+      get_cluster_idx: 1,
+      get_cluster_idx: 2
+    ]
+
   alias CommonCrawl.Index
 
   @tag :integration
