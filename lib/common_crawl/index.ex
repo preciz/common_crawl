@@ -2,7 +2,7 @@ defmodule CommonCrawl.Index do
   @moduledoc """
   Interacting with index files of Common Crawl.
   """
-
+  import CommonCrawl.Helpers
   require Logger
 
   @base_url Application.compile_env(:common_crawl, :base_url, "https://data.commoncrawl.org/")
@@ -160,10 +160,13 @@ defmodule CommonCrawl.Index do
   @spec stream(String.t(), keyword()) :: Enumerable.t()
   def stream(crawl_id, opts \\ []) do
     preprocess_fun = Keyword.get(opts, :preprocess_fun, & &1)
+    max_attempts = Keyword.get(opts, :max_attempts, 3)
+    backoff = Keyword.get(opts, :backoff, 500)
     dir = Keyword.get(opts, :dir, System.tmp_dir!())
 
     # Get all index files
-    {:ok, cluster_idx} = get_cluster_idx(crawl_id)
+    {:ok, cluster_idx} =
+      with_attempts(fn -> get_cluster_idx(crawl_id) end, max_attempts, backoff)
 
     cluster_idx
     |> String.split("\n", trim: true)
