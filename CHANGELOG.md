@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1] - 2025-01-12
+
+### Added
+- Added retry mechanism with backoff to `stream/2` function
+- New options `:max_attempts` and `:backoff` for `stream/2`
+
 ## [0.3.0] - 2025-01-09
 
 ### Added

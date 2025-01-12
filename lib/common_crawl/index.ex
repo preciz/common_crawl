@@ -143,6 +143,8 @@ defmodule CommonCrawl.Index do
   ## Options
     * `:preprocess_fun` - function to preprocess the stream before processing (default: & &1)
     * `:dir` - temporary directory for storing downloaded files (default: System.tmp_dir!())
+    * `:max_attempts` - maximum number of retry attempts for fetching cluster.idx (default: 3)
+    * `:backoff` - milliseconds to wait between retry attempts (default: 500)
 
   ## Examples
 
