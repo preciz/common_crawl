@@ -172,7 +172,6 @@ defmodule CommonCrawl.Index do
 
     cluster_idx
     |> String.split("\n", trim: true)
-    |> Stream.uniq()
     |> preprocess_fun.()
     |> Stream.map(fn line ->
       [_, index_filename | _] = line |> String.split("\t")
