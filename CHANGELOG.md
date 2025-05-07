@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.3.2] - 2025-05-07
+- Remove `Stream.uniq` to fix performance issue
+
 ## [0.3.1] - 2025-01-12
 
 ### Added
