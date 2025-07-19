@@ -197,4 +197,54 @@ defmodule CommonCrawl.Index do
     end)
     |> Stream.map(fn {:ok, tuple} -> tuple end)
   end
+
+  @doc """
+  Streams parsed index entries for the specified host.
+
+  This function wraps `stream/2`, applying a filter to include only those entries whose URL host matches the given `host`.
+
+  ## Examples
+
+      iex> CommonCrawl.Index.stream_host("CC-MAIN-2024-51", "www.example.com") |> Enum.take(2)
+      [
+        {"com,example)/", 20240108123456, %{"url" => "http://www.example.com"}},
+        {"com,example)/", 20240108123457, %{"url" => "http://www.example.com/page2"}}
+      ]
+  """
+  @spec stream_host(String.t(), String.t(), keyword()) :: Enumerable.t()
+  def stream_host(crawl_id, host, opts \\ []) do
+    preprocess_fun = fn stream ->
+      host_preprocess_fun(stream, host)
+      |> (opts[:preprocess_fun] || (& &1)).()
+    end
+
+    opts = Keyword.put(opts, :preprocess_fun, preprocess_fun)
+
+    stream(crawl_id, opts)
+    |> Stream.filter(fn {_, _, %{"url" => url}} ->
+      URI.parse(url).host == host
+    end)
+  end
+
+  @doc false
+  def host_preprocess_fun(index_list, host) do
+    start_pattern = search_key_host_start_pattern(host)
+
+    end_index = index_list |> Enum.find_index(&(&1 > start_pattern))
+    start_index = max(end_index - 1, 0)
+
+    index_list
+    |> Enum.slice(start_index..end_index)
+  end
+
+  @doc false
+  def search_key_host_start_pattern(host) when is_binary(host) do
+    host
+    |> String.split(".")
+    |> Enum.reverse()
+    |> Enum.take(2)
+    |> Enum.join(",")
+    |> Kernel.<>(")")
+  end
 end
+

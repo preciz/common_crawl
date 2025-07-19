@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.3.4] - 2025-07-19
+- Implement `stream_host/3` for streaming index entries by host
+
 ## [0.3.3] - 2025-07-18
 - Update collinfo.json
 
