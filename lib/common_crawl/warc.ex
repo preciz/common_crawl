@@ -56,7 +56,10 @@ defmodule CommonCrawl.WARC do
 
   @spec parse_response_body(binary()) :: [String.t()]
   defp parse_response_body(bin) do
-    bin
+    case bin do
+      <<31, 139, _::binary>> -> :zlib.gunzip(bin)
+      _ -> bin
+    end
     |> String.trim()
     |> String.split("\r\n\r\n", parts: 3)
   end
