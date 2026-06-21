@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.3.5] - 2026-06-21
+- Fix WARC segment decompression range fetching issue
+
 ## [0.3.4] - 2025-07-19
 - Implement `stream_host/3` for streaming index entries by host
 
