@@ -9,7 +9,9 @@ defmodule CommonCrawl.IndexTest do
       get_all_paths: 2,
       parser: 1,
       get_cluster_idx: 1,
-      get_cluster_idx: 2
+      get_cluster_idx: 2,
+      stream_host: 2,
+      stream_host: 3
     ]
 
   alias CommonCrawl.Index
@@ -126,4 +128,28 @@ defmodule CommonCrawl.IndexTest do
   test "get_cluster_idx returns error for non-existent crawl ID" do
     assert {:error, {:http_error, 404}} = Index.get_cluster_idx("CC-MAIN-1999-99")
   end
+
+  describe "host helper functions" do
+    test "search_key_host_start_pattern/1" do
+      assert Index.search_key_host_start_pattern("www.example.com") == "com,example)"
+      assert Index.search_key_host_start_pattern("example.co.uk") == "uk,co)"
+    end
+
+    test "host_preprocess_fun/2" do
+      index_list = [
+        "com,apple)/ 2024...",
+        "com,example)/ 2024...",
+        "com,google)/ 2024...",
+        "org,wikipedia)/ 2024..."
+      ]
+      # "com,example)/ 2024..." is greater than "com,example)" because "/" > ")".
+      # So end_index is 1 ("com,example)/ 2024...") and start_index is 0 ("com,apple)/ 2024...").
+      # It returns slice 0..1.
+      assert Index.host_preprocess_fun(index_list, "www.example.com") == [
+               "com,apple)/ 2024...",
+               "com,example)/ 2024..."
+             ]
+    end
+  end
 end
+
