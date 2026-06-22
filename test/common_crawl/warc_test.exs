@@ -42,4 +42,62 @@ defmodule CommonCrawl.WARCTest do
     assert {:error, {:http_error, 404}} =
              WARC.get_segment("non-existent-file.warc.gz", 0, 100)
   end
+
+  describe "parse_response_body/1" do
+    test "parses typical CRLF-terminated WARC and HTTP header structure" do
+      input = "WARC/1.0\r\nWARC-Type: response\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello"
+      assert [warc, headers, body] = WARC.parse_response_body(input)
+      assert warc == "WARC/1.0\r\nWARC-Type: response"
+      assert headers == "HTTP/1.1 200 OK\r\nContent-Length: 5"
+      assert body == "hello"
+    end
+
+    test "parses LF-terminated WARC and HTTP header structure" do
+      input = "WARC/1.0\nWARC-Type: response\n\nHTTP/1.1 200 OK\nContent-Length: 5\n\nhello"
+      assert [warc, headers, body] = WARC.parse_response_body(input)
+      assert warc == "WARC/1.0\nWARC-Type: response"
+      assert headers == "HTTP/1.1 200 OK\nContent-Length: 5"
+      assert body == "hello"
+    end
+
+    test "parses mixed line endings (CRLF and LF)" do
+      input = "WARC/1.0\r\nWARC-Type: response\n\nHTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello"
+      assert [warc, headers, body] = WARC.parse_response_body(input)
+      assert warc == "WARC/1.0\r\nWARC-Type: response"
+      assert headers == "HTTP/1.1 200 OK\r\nContent-Length: 5"
+      assert body == "hello"
+    end
+
+    test "preserves binary payloads with invalid UTF-8 sequences" do
+      binary_payload = <<0xFF, 0xFE, 0x00, 0x01, 0x12, 0x34, 0x0D, 0x0A>>
+      input = "WARC/1.0\r\n\r\nHTTP/1.1 200 OK\r\n\r\n" <> binary_payload
+      assert [warc, headers, body] = WARC.parse_response_body(input)
+      assert warc == "WARC/1.0"
+      assert headers == "HTTP/1.1 200 OK"
+      assert body == binary_payload
+    end
+
+    test "trims leading whitespace but preserves trailing whitespace in the payload" do
+      binary_payload = "hello \r\n "
+      input = "\r\n\n WARC/1.0\r\n\r\nHTTP/1.1 200 OK\r\n\r\n" <> binary_payload
+      assert [warc, headers, body] = WARC.parse_response_body(input)
+      assert warc == "WARC/1.0"
+      assert headers == "HTTP/1.1 200 OK"
+      assert body == binary_payload
+    end
+
+    test "correctly handles incomplete payloads" do
+      assert ["WARC/1.0"] = WARC.parse_response_body("WARC/1.0")
+      assert ["WARC/1.0", "HTTP/1.1 200 OK"] = WARC.parse_response_body("WARC/1.0\r\n\r\nHTTP/1.1 200 OK")
+    end
+
+    test "uncompresses gzipped input before parsing" do
+      raw_content = "WARC/1.0\r\n\r\nHTTP/1.1 200 OK\r\n\r\nhello"
+      gzipped = :zlib.gzip(raw_content)
+      assert [warc, headers, body] = WARC.parse_response_body(gzipped)
+      assert warc == "WARC/1.0"
+      assert headers == "HTTP/1.1 200 OK"
+      assert body == "hello"
+    end
+  end
 end
