@@ -7,6 +7,7 @@ defmodule CommonCrawlMockTest do
   describe "CommonCrawl core functions" do
     test "get_collinfo/1 success" do
       body = [%{"id" => "CC-MAIN-2024-51"}]
+
       Req
       |> Mimic.expect(:get, fn "https://index.commoncrawl.org/collinfo.json", _opts ->
         {:ok, %Req.Response{status: 200, body: body}}
@@ -35,12 +36,14 @@ defmodule CommonCrawlMockTest do
 
     test "update_collinfo!/0 updates cached file" do
       body = [%{"id" => "CC-MAIN-2024-51"}]
+
       Req
       |> Mimic.expect(:get, fn "https://index.commoncrawl.org/collinfo.json", _opts ->
         {:ok, %Req.Response{status: 200, body: body}}
       end)
 
       original = File.read!("priv/collinfo.json")
+
       try do
         assert :ok = CommonCrawl.update_collinfo!()
       after
@@ -55,7 +58,10 @@ defmodule CommonCrawlMockTest do
       |> Mimic.expect(:get, 1, fn url, _opts ->
         url_str = to_string(url)
         assert String.starts_with?(url_str, "https://index.commoncrawl.org/")
-        body = "com,example)/ 20241214183829 {\"url\": \"https://example.com\", \"offset\": \"100\", \"length\": \"50\", \"filename\": \"#{warc_filename}\"}"
+
+        body =
+          "com,example)/ 20241214183829 {\"url\": \"https://example.com\", \"offset\": \"100\", \"length\": \"50\", \"filename\": \"#{warc_filename}\"}"
+
         {:ok, %Req.Response{status: 200, body: body}}
       end)
       |> Mimic.expect(:get, 1, fn url, _opts ->
@@ -89,7 +95,7 @@ defmodule CommonCrawlMockTest do
         {:ok, %Req.Response{status: 200, body: body}}
       end)
 
-      assert {:ok, [{"com,example)/", 20241214183829, %{"url" => "https://example.com"}}]} =
+      assert {:ok, [{"com,example)/", 20_241_214_183_829, %{"url" => "https://example.com"}}]} =
                IndexAPI.get("https://index.example.com", %{"url" => "https://example.com"})
     end
 
@@ -263,7 +269,9 @@ defmodule CommonCrawlMockTest do
 
       try do
         result = Index.stream("CC-MAIN-2024-51", dir: tmp_dir) |> Enum.to_list()
-        assert [{"com,example)/", 20240108123456, %{"url" => "http://www.example.com"}}] == result
+
+        assert [{"com,example)/", 20_240_108_123_456, %{"url" => "http://www.example.com"}}] ==
+                 result
       after
         File.rm_rf!(tmp_dir)
       end
@@ -276,15 +284,15 @@ defmodule CommonCrawlMockTest do
       |> Mimic.expect(:get, 1, fn _url, opts ->
         assert opts[:max_retries] == 2
         assert is_function(opts[:retry_delay], 1)
-        
+
         retry_delay = opts[:retry_delay]
-        
+
         delay_0 = retry_delay.(0)
         assert is_integer(delay_0) and delay_0 >= 1 and delay_0 <= 2000
-        
+
         delay_1 = retry_delay.(1)
         assert is_integer(delay_1) and delay_1 >= 1 and delay_1 <= 4000
-        
+
         delay_2 = retry_delay.(2)
         assert is_integer(delay_2) and delay_2 >= 1 and delay_2 <= 8000
 
@@ -334,7 +342,9 @@ defmodule CommonCrawlMockTest do
 
       try do
         result = Index.stream("CC-MAIN-2024-51", dir: tmp_dir) |> Enum.to_list()
-        assert [{"com,example)/", 20240108123456, %{"url" => "http://www.example.com"}}] == result
+
+        assert [{"com,example)/", 20_240_108_123_456, %{"url" => "http://www.example.com"}}] ==
+                 result
       after
         File.rm_rf!(tmp_dir)
       end
@@ -398,7 +408,8 @@ defmodule CommonCrawlMockTest do
         result =
           Index.stream_host("CC-MAIN-2024-51", "www.example.com", dir: tmp_dir) |> Enum.to_list()
 
-        assert [{"com,example)/", 20240108123456, %{"url" => "http://www.example.com"}}] == result
+        assert [{"com,example)/", 20_240_108_123_456, %{"url" => "http://www.example.com"}}] ==
+                 result
       after
         File.rm_rf!(tmp_dir)
       end

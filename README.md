@@ -36,8 +36,8 @@ crawl = List.first(crawls)
 {url, timestamp, metadata} = List.first(results)
 {:ok, segment} = CommonCrawl.WARC.get_segment(
   metadata["filename"],
-  metadata["offset"],
-  metadata["length"]
+  String.to_integer(metadata["offset"]),
+  String.to_integer(metadata["length"])
 )
 
 # Stream all entries from index files
@@ -49,7 +49,8 @@ end)
 
 # Work with raw index files
 {:ok, index_paths} = CommonCrawl.Index.get_all_paths("CC-MAIN-2021-43")
-{:ok, index_file} = CommonCrawl.Index.get("CC-MAIN-2021-43", List.first(index_paths))
+filename = Path.basename(List.first(index_paths))
+{:ok, index_file} = CommonCrawl.Index.get("CC-MAIN-2021-43", filename)
 ```
 
 ## Docs

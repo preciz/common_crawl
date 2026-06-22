@@ -45,7 +45,9 @@ defmodule CommonCrawl.WARCTest do
 
   describe "parse_response_body/1" do
     test "parses typical CRLF-terminated WARC and HTTP header structure" do
-      input = "WARC/1.0\r\nWARC-Type: response\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello"
+      input =
+        "WARC/1.0\r\nWARC-Type: response\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello"
+
       assert [warc, headers, body] = WARC.parse_response_body(input)
       assert warc == "WARC/1.0\r\nWARC-Type: response"
       assert headers == "HTTP/1.1 200 OK\r\nContent-Length: 5"
@@ -61,7 +63,9 @@ defmodule CommonCrawl.WARCTest do
     end
 
     test "parses mixed line endings (CRLF and LF)" do
-      input = "WARC/1.0\r\nWARC-Type: response\n\nHTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello"
+      input =
+        "WARC/1.0\r\nWARC-Type: response\n\nHTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello"
+
       assert [warc, headers, body] = WARC.parse_response_body(input)
       assert warc == "WARC/1.0\r\nWARC-Type: response"
       assert headers == "HTTP/1.1 200 OK\r\nContent-Length: 5"
@@ -88,7 +92,9 @@ defmodule CommonCrawl.WARCTest do
 
     test "correctly handles incomplete payloads" do
       assert ["WARC/1.0"] = WARC.parse_response_body("WARC/1.0")
-      assert ["WARC/1.0", "HTTP/1.1 200 OK"] = WARC.parse_response_body("WARC/1.0\r\n\r\nHTTP/1.1 200 OK")
+
+      assert ["WARC/1.0", "HTTP/1.1 200 OK"] =
+               WARC.parse_response_body("WARC/1.0\r\n\r\nHTTP/1.1 200 OK")
     end
 
     test "uncompresses gzipped input before parsing" do

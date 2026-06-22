@@ -142,6 +142,7 @@ defmodule CommonCrawl.IndexTest do
         "com,google)/ 2024...",
         "org,wikipedia)/ 2024..."
       ]
+
       # "com,example)/ 2024..." is greater than "com,example)" because "/" > ")".
       # So end_index is 1 ("com,example)/ 2024...") and start_index is 0 ("com,apple)/ 2024...").
       # It returns slice 0..1.
@@ -152,4 +153,3 @@ defmodule CommonCrawl.IndexTest do
     end
   end
 end
-

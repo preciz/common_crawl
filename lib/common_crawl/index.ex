@@ -307,4 +307,3 @@ defmodule CommonCrawl.Index do
     |> Kernel.<>(")")
   end
 end
-
