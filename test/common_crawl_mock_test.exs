@@ -269,6 +269,77 @@ defmodule CommonCrawlMockTest do
       end
     end
 
+    test "stream/2 configures Req retry options correctly" do
+      cluster_idx_content = "key\tcdx-00000.gz\t100\n"
+
+      Req
+      |> Mimic.expect(:get, 1, fn _url, opts ->
+        assert opts[:max_retries] == 2
+        assert is_function(opts[:retry_delay], 1)
+        
+        retry_delay = opts[:retry_delay]
+        
+        delay_0 = retry_delay.(0)
+        assert is_integer(delay_0) and delay_0 >= 1 and delay_0 <= 2000
+        
+        delay_1 = retry_delay.(1)
+        assert is_integer(delay_1) and delay_1 >= 1 and delay_1 <= 4000
+        
+        delay_2 = retry_delay.(2)
+        assert is_integer(delay_2) and delay_2 >= 1 and delay_2 <= 8000
+
+        delay_5 = retry_delay.(5)
+        assert is_integer(delay_5) and delay_5 >= 1 and delay_5 <= 30000
+
+        {:ok, %Req.Response{status: 200, body: cluster_idx_content}}
+      end)
+      |> Mimic.expect(:get, 1, fn _url, _opts ->
+        {:ok, %Req.Response{status: 200, body: []}}
+      end)
+
+      assert [] = Index.stream("CC-MAIN-2024-51") |> Stream.take(1) |> Enum.to_list()
+    end
+
+    test "stream/2 raises on index partition stream failure" do
+      cluster_idx_content = "key\tcdx-00000.gz\t100\n"
+
+      Req
+      |> Mimic.expect(:get, 1, fn _url, _opts ->
+        {:ok, %Req.Response{status: 200, body: cluster_idx_content}}
+      end)
+      |> Mimic.expect(:get, 1, fn _url, _opts ->
+        {:error, :timeout}
+      end)
+
+      assert_raise RuntimeError, ~r/Failed to stream index partition cdx-00000.gz/, fn ->
+        Index.stream("CC-MAIN-2024-51") |> Enum.to_list()
+      end
+    end
+
+    test "stream/2 handles index partition data without trailing newline" do
+      cluster_idx_content = "key\tcdx-00000.gz\t100\n"
+      index_line = "com,example)/ 20240108123456 {\"url\": \"http://www.example.com\"}"
+      gzipped_index = :zlib.gzip(index_line)
+
+      Req
+      |> Mimic.expect(:get, 1, fn _url, _opts ->
+        {:ok, %Req.Response{status: 200, body: cluster_idx_content}}
+      end)
+      |> Mimic.expect(:get, 1, fn _url, _opts ->
+        {:ok, %Req.Response{status: 200, body: gzipped_index}}
+      end)
+
+      tmp_dir = "test/support/tmp_stream_no_nl"
+      File.mkdir_p!(tmp_dir)
+
+      try do
+        result = Index.stream("CC-MAIN-2024-51", dir: tmp_dir) |> Enum.to_list()
+        assert [{"com,example)/", 20240108123456, %{"url" => "http://www.example.com"}}] == result
+      after
+        File.rm_rf!(tmp_dir)
+      end
+    end
+
     test "stream/2 filters out parsing errors" do
       cluster_idx_content = "key\tcdx-00000.gz\t100\n"
       invalid_index_line = "invalid line here\n"

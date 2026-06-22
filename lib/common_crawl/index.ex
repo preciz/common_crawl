@@ -237,19 +237,24 @@ defmodule CommonCrawl.Index do
   end
 
   defp split_lines(chunk_stream) do
-    Stream.transform(
-      chunk_stream,
+    chunk_stream
+    |> Stream.concat([:end_of_stream])
+    |> Stream.transform(
       fn -> "" end,
-      fn chunk, buffer ->
-        data = buffer <> chunk
-        lines = String.split(data, "\n")
-        {complete_lines, [incomplete_line]} = Enum.split(lines, -1)
-        {complete_lines, incomplete_line}
-      end,
       fn
-        "" -> {[], ""}
-        buffer -> {[buffer], ""}
-      end
+        :end_of_stream, "" ->
+          {[], ""}
+
+        :end_of_stream, buffer ->
+          {[buffer], ""}
+
+        chunk, buffer ->
+          data = buffer <> chunk
+          lines = String.split(data, "\n")
+          {complete_lines, [incomplete_line]} = Enum.split(lines, -1)
+          {complete_lines, incomplete_line}
+      end,
+      fn _ -> :ok end
     )
   end
 
