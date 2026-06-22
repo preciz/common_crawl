@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.4.1] - 2026-06-22
+- Update `req` dependency to version `~> 0.6`
+
 ## [0.4.0] - 2026-06-22
 - Fix WARC segment decompression range fetching issue by making decompression adaptive
 - Handle HTTP error status codes in API responses and file downloads

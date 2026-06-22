@@ -1,7 +1,7 @@
 defmodule CommonCrawl.MixProject do
   use Mix.Project
 
-  @version "0.4.0"
+  @version "0.4.1"
   @github "https://github.com/preciz/common_crawl"
 
   def project do
@@ -32,7 +32,7 @@ defmodule CommonCrawl.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:req, "~> 0.5"},
+      {:req, "~> 0.6"},
       {:ex_doc, "~> 0.36", only: :dev, runtime: false},
       {:mimic, "~> 2.3", only: :test}
     ]
