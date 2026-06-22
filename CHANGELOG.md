@@ -1,7 +1,11 @@
 # Changelog
 
-## [0.3.5] - 2026-06-21
-- Fix WARC segment decompression range fetching issue
+## [0.3.5] - 2026-06-22
+- Fix WARC segment decompression range fetching issue by making decompression adaptive
+- Handle HTTP error status codes in API responses and file downloads
+- Add unit and integration tests for error handling and helper functions
+- Disable Dependabot updates
+- Update dependencies (`req` and `ex_doc`) and local cached `collinfo.json`
 
 ## [0.3.4] - 2025-07-19
 - Implement `stream_host/3` for streaming index entries by host
