@@ -16,7 +16,16 @@ defmodule CommonCrawl.Helpers do
         {:ok, result}
 
       {:error, _} ->
-        if backoff_ms > 0, do: Process.sleep(backoff_ms)
+        if backoff_ms > 0 do
+          max_backoff = 30_000
+          # Calculate exponential backoff limit: base_backoff * 2^(attempt - 1)
+          factor = :math.pow(2, attempt - 1) |> round()
+          temp_limit = backoff_ms * factor
+          sleep_limit = max(1, min(max_backoff, temp_limit))
+          # Full jitter: random sleep between 1 and sleep_limit
+          sleep_time = :rand.uniform(sleep_limit)
+          Process.sleep(sleep_time)
+        end
         do_with_attempts(fun, max_attempts, attempt + 1, backoff_ms)
 
       {:halt, error} ->

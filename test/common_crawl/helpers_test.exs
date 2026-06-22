@@ -44,6 +44,25 @@ defmodule CommonCrawl.HelpersTest do
     assert result == {:ok, :noise}
   end
 
+  test "attempts function with exponential backoff and jitter" do
+    uid = :crypto.strong_rand_bytes(8)
+    put(uid, 0)
+
+    result =
+      with_attempts(
+        fn ->
+          val = get(uid)
+          put(uid, val + 1)
+          {:error, :retry}
+        end,
+        3,
+        5
+      )
+
+    assert get(uid) == 3
+    assert result == {:error, :retry}
+  end
+
   defp put(key, val), do: :persistent_term.put(key, val)
   defp get(key), do: :persistent_term.get(key)
 end
