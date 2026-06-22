@@ -340,6 +340,7 @@ defmodule CommonCrawlMockTest do
       end
     end
 
+    @tag :capture_log
     test "stream/2 filters out parsing errors" do
       cluster_idx_content = "key\tcdx-00000.gz\t100\n"
       invalid_index_line = "invalid line here\n"
