@@ -169,11 +169,12 @@ defmodule CommonCrawl.Index do
     preprocess_fun = Keyword.get(opts, :preprocess_fun, & &1)
     max_attempts = Keyword.get(opts, :max_attempts, 3)
     backoff = Keyword.get(opts, :backoff, 500)
-    dir = Keyword.get(opts, :dir, System.tmp_dir!())
+
+    req_opts = Keyword.drop(opts, [:preprocess_fun, :max_attempts, :backoff, :dir])
 
     # Get all index files
     {:ok, cluster_idx} =
-      with_attempts(fn -> get_cluster_idx(crawl_id) end, max_attempts, backoff)
+      with_attempts(fn -> get_cluster_idx(crawl_id, req_opts) end, max_attempts, backoff)
 
     cluster_idx
     |> String.split("\n", trim: true)
@@ -184,13 +185,20 @@ defmodule CommonCrawl.Index do
       index_filename
     end)
     |> Stream.flat_map(fn filename ->
-      {:ok, index_gzipped} = get(crawl_id, filename)
-      path = Path.join(dir, filename)
-      File.write!(path, index_gzipped)
+      url = url(crawl_id, filename)
 
-      path
-      |> File.stream!([:compressed])
-      |> Stream.map(&parser/1)
+      case Req.get(url, Keyword.put(req_opts, :into, :self)) do
+        {:ok, %Req.Response{status: 200, body: body_stream}} ->
+          body_stream = if is_binary(body_stream), do: [body_stream], else: body_stream
+
+          body_stream
+          |> inflate_stream()
+          |> split_lines()
+          |> Stream.map(&parser/1)
+
+        other ->
+          raise "Failed to stream index partition #{filename}: #{inspect(other)}"
+      end
     end)
     |> Stream.filter(fn
       {:ok, _tuple} ->
@@ -201,6 +209,41 @@ defmodule CommonCrawl.Index do
         false
     end)
     |> Stream.map(fn {:ok, tuple} -> tuple end)
+  end
+
+  defp inflate_stream(body_stream) do
+    Stream.transform(
+      body_stream,
+      fn ->
+        z = :zlib.open()
+        :ok = :zlib.inflateInit(z, 31)
+        z
+      end,
+      fn chunk, z ->
+        decompressed = :zlib.inflate(z, chunk) |> IO.iodata_to_binary()
+        {[decompressed], z}
+      end,
+      fn z ->
+        :zlib.close(z)
+      end
+    )
+  end
+
+  defp split_lines(chunk_stream) do
+    Stream.transform(
+      chunk_stream,
+      fn -> "" end,
+      fn chunk, buffer ->
+        data = buffer <> chunk
+        lines = String.split(data, "\n")
+        {complete_lines, [incomplete_line]} = Enum.split(lines, -1)
+        {complete_lines, incomplete_line}
+      end,
+      fn
+        "" -> {[], ""}
+        buffer -> {[buffer], ""}
+      end
+    )
   end
 
   @doc """
