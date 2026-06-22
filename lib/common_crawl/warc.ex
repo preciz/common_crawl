@@ -40,7 +40,7 @@ defmodule CommonCrawl.WARC do
       |> Keyword.put_new(:receive_timeout, @receive_timeout)
 
     case Req.get(uri, opts) do
-      {:ok, %{body: body}} ->
+      {:ok, %Req.Response{status: status, body: body}} when status in [200, 206] ->
         case parse_response_body(body) do
           [warc, headers, response] ->
             {:ok, %{warc: warc, headers: headers, response: response}}
@@ -48,6 +48,9 @@ defmodule CommonCrawl.WARC do
           other ->
             {:error, {:no_headers_or_response, other}}
         end
+
+      {:ok, %Req.Response{status: status}} ->
+        {:error, {:http_error, status}}
 
       {:error, reason} ->
         {:error, reason}

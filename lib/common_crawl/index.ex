@@ -28,8 +28,11 @@ defmodule CommonCrawl.Index do
     url = all_paths_url(crawl_id)
 
     case Req.get(url, opts) do
-      {:ok, %Req.Response{body: body}} ->
+      {:ok, %Req.Response{status: 200, body: body}} ->
         {:ok, :zlib.gunzip(body) |> String.split("\n", trim: true)}
+
+      {:ok, %Req.Response{status: status}} ->
+        {:error, {:http_error, status}}
 
       {:error, error} ->
         {:error, error}
@@ -78,7 +81,8 @@ defmodule CommonCrawl.Index do
     url = url(crawl_id, filename)
 
     case Req.get(url, opts) do
-      {:ok, %Req.Response{body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: status}} -> {:error, {:http_error, status}}
       {:error, error} -> {:error, error}
     end
   end
@@ -118,7 +122,8 @@ defmodule CommonCrawl.Index do
     url = cluster_idx_url(crawl_id)
 
     case Req.get(url, opts) do
-      {:ok, %Req.Response{body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: status}} -> {:error, {:http_error, status}}
       {:error, error} -> {:error, error}
     end
   end

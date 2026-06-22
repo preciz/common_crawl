@@ -111,4 +111,19 @@ defmodule CommonCrawl.IndexTest do
       assert {:error, {^invalid_json, _}} = Index.parser(invalid_json)
     end
   end
+
+  @tag :integration
+  test "get_all_paths returns error for invalid crawl ID" do
+    assert {:error, {:http_error, 404}} = Index.get_all_paths("CC-MAIN-1999-99")
+  end
+
+  @tag :integration
+  test "get returns error for non-existent index file" do
+    assert {:error, {:http_error, 404}} = Index.get("CC-MAIN-2024-51", "non-existent-file.gz")
+  end
+
+  @tag :integration
+  test "get_cluster_idx returns error for non-existent crawl ID" do
+    assert {:error, {:http_error, 404}} = Index.get_cluster_idx("CC-MAIN-1999-99")
+  end
 end

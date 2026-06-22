@@ -36,4 +36,10 @@ defmodule CommonCrawl.WARCTest do
     # Check HTTP headers format
     assert String.contains?(headers, "HTTP/1.1")
   end
+
+  @tag :integration
+  test "returns http_error for non-existent WARC file" do
+    assert {:error, {:http_error, 404}} =
+             WARC.get_segment("non-existent-file.warc.gz", 0, 100)
+  end
 end

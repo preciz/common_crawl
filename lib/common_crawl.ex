@@ -72,7 +72,8 @@ defmodule CommonCrawl do
   @spec get_collinfo() :: {:ok, [map]} | {:error, any}
   def get_collinfo(opts \\ []) do
     case Req.get(@collinfo_json_url, opts) do
-      {:ok, %Req.Response{body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
+      {:ok, %Req.Response{status: status}} -> {:error, {:http_error, status}}
       {:error, error} -> {:error, error}
     end
   end
