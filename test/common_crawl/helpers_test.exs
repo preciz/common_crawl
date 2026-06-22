@@ -63,6 +63,24 @@ defmodule CommonCrawl.HelpersTest do
     assert result == {:error, :retry}
   end
 
+  test "stops attempting if {:halt, error} is returned" do
+    uid = :crypto.strong_rand_bytes(8)
+    put(uid, 0)
+
+    result =
+      with_attempts(
+        fn ->
+          val = get(uid)
+          put(uid, val + 1)
+          {:halt, :stopped}
+        end,
+        3
+      )
+
+    assert get(uid) == 1
+    assert result == :stopped
+  end
+
   defp put(key, val), do: :persistent_term.put(key, val)
   defp get(key), do: :persistent_term.get(key)
 end
