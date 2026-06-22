@@ -1,7 +1,7 @@
 defmodule CommonCrawl.MixProject do
   use Mix.Project
 
-  @version "0.3.5"
+  @version "0.4.0"
   @github "https://github.com/preciz/common_crawl"
 
   def project do

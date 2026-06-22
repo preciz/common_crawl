@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.5] - 2026-06-22
+## [0.4.0] - 2026-06-22
 - Fix WARC segment decompression range fetching issue by making decompression adaptive
 - Handle HTTP error status codes in API responses and file downloads
 - Add unit and integration tests for error handling and helper functions
