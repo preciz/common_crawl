@@ -34,7 +34,7 @@ defmodule CommonCrawl.MixProject do
     [
       {:req, "~> 0.5"},
       {:ex_doc, "~> 0.36", only: :dev, runtime: false},
-      {:mimic, "~> 1.7", only: :test}
+      {:mimic, "~> 2.3", only: :test}
     ]
   end
 
