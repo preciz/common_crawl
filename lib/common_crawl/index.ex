@@ -2,7 +2,6 @@ defmodule CommonCrawl.Index do
   @moduledoc """
   Interacting with index files of Common Crawl.
   """
-  import CommonCrawl.Helpers
   require Logger
 
   @base_url Application.compile_env(:common_crawl, :base_url, "https://data.commoncrawl.org/")
@@ -170,11 +169,19 @@ defmodule CommonCrawl.Index do
     max_attempts = Keyword.get(opts, :max_attempts, 3)
     backoff = Keyword.get(opts, :backoff, 2000)
 
-    req_opts = Keyword.drop(opts, [:preprocess_fun, :max_attempts, :backoff, :dir])
+    req_opts =
+      opts
+      |> Keyword.drop([:preprocess_fun, :max_attempts, :backoff, :dir])
+      |> Keyword.put_new(:max_retries, max_attempts - 1)
+      |> Keyword.put_new(:retry_delay, fn retry_count ->
+        max_backoff = 30_000
+        factor = :math.pow(2, retry_count) |> round()
+        sleep_limit = max(1, min(max_backoff, backoff * factor))
+        :rand.uniform(sleep_limit)
+      end)
 
     # Get all index files
-    {:ok, cluster_idx} =
-      with_attempts(fn -> get_cluster_idx(crawl_id, req_opts) end, max_attempts, backoff)
+    {:ok, cluster_idx} = get_cluster_idx(crawl_id, req_opts)
 
     cluster_idx
     |> String.split("\n", trim: true)
