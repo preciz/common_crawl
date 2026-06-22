@@ -26,7 +26,7 @@ defmodule CommonCrawl.WARC do
        }}
   """
   @spec get_segment(String.t(), integer(), integer(), keyword()) ::
-          {:ok, %{warc: String.t(), headers: String.t(), response: String.t()}} | {:error, any()}
+          {:ok, %{warc: binary(), headers: binary(), response: binary()}} | {:error, any()}
   def get_segment(filename, offset, length, opts \\ [])
       when is_binary(filename) and is_integer(offset) and is_integer(length) and length > 0 do
     uri = URI.merge(@base_url, filename)
@@ -57,13 +57,33 @@ defmodule CommonCrawl.WARC do
     end
   end
 
-  @spec parse_response_body(binary()) :: [String.t()]
-  defp parse_response_body(bin) do
-    case bin do
-      <<31, 139, _::binary>> -> :zlib.gunzip(bin)
-      _ -> bin
+  @doc false
+  @spec parse_response_body(binary()) :: [binary()]
+  def parse_response_body(bin) do
+    unzipped =
+      case bin do
+        <<31, 139, _::binary>> -> :zlib.gunzip(bin)
+        _ -> bin
+      end
+
+    unzipped
+    |> trim_leading()
+    |> split_warc_parts()
+  end
+
+  defp trim_leading(<<c, rest::binary>>) when c in [?\s, ?\t, ?\r, ?\n], do: trim_leading(rest)
+  defp trim_leading(bin), do: bin
+
+  defp split_warc_parts(bin) do
+    case :binary.split(bin, ["\r\n\r\n", "\n\n"]) do
+      [warc, rest] ->
+        case :binary.split(rest, ["\r\n\r\n", "\n\n"]) do
+          [headers, response] -> [warc, headers, response]
+          [headers] -> [warc, headers]
+        end
+
+      [warc] ->
+        [warc]
     end
-    |> String.trim()
-    |> String.split("\r\n\r\n", parts: 3)
   end
 end
