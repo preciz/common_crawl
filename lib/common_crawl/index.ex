@@ -149,7 +149,7 @@ defmodule CommonCrawl.Index do
     * `:preprocess_fun` - function to preprocess the stream before processing (default: & &1)
     * `:dir` - temporary directory for storing downloaded files (default: System.tmp_dir!())
     * `:max_attempts` - maximum number of retry attempts for fetching cluster.idx (default: 3)
-    * `:backoff` - milliseconds to wait between retry attempts (default: 500)
+    * `:backoff` - milliseconds to wait between retry attempts (default: 2000)
 
   ## Examples
 
@@ -168,7 +168,7 @@ defmodule CommonCrawl.Index do
   def stream(crawl_id, opts \\ []) do
     preprocess_fun = Keyword.get(opts, :preprocess_fun, & &1)
     max_attempts = Keyword.get(opts, :max_attempts, 3)
-    backoff = Keyword.get(opts, :backoff, 500)
+    backoff = Keyword.get(opts, :backoff, 2000)
 
     req_opts = Keyword.drop(opts, [:preprocess_fun, :max_attempts, :backoff, :dir])
 

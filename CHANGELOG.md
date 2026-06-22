@@ -6,6 +6,8 @@
 - Add unit and integration tests for error handling and helper functions
 - Disable Dependabot updates
 - Update dependencies (`req` and `ex_doc`) and local cached `collinfo.json`
+- Implement exponential backoff with jitter retry strategy for fetching indexes
+- Stream index partition files entirely in-memory without downloading to disk, resolving disk space leak issues
 
 ## [0.3.4] - 2025-07-19
 - Implement `stream_host/3` for streaming index entries by host
